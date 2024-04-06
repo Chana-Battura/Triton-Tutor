@@ -25,4 +25,4 @@ function searchForWord(word) {
 
 // Example usage: Search for the word "example" within the HTML content of the webpage
 const word = 'example';
-searchForWord('https://cfvod.kaltura.com/api_v3');
+const transcriptUrl = searchForWord('https://cfvod.kaltura.com/api_v3');
