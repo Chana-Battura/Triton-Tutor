@@ -1,5 +1,5 @@
 window.addEventListener("DOMContentLoaded", (event) => {
-    const el = document.getElementById("captureBtn");
+    const el = document.getElementById("vidStart");
     if (el) {
       el.addEventListener("click", async () => {
             let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
