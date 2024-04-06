@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Screenshot Extension",
+    "name": "Podcast Notetaker",
     "version": "1.0",
-    "description": "Capture screenshots of web pages",
+    "description": "Gives the video URL",
     "permissions": ["activeTab", "tabs", "scripting"],
     "action": {
       "default_popup": "popup.html",
