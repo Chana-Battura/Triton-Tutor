@@ -1,4 +1,4 @@
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => { 
     if (request.action === "searchForSrc") {
         console.log("BRUH");
 
