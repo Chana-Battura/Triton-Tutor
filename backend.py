@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-openai.api_key = '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'
+openai.api_key = 'API---KEY----HERE'
 
 def fetch_lecture_transcript(url):
     try:
