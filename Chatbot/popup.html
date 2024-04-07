@@ -4,24 +4,126 @@
     <meta charset="UTF-8">
     <title>ChatBot Extension</title>
     <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+
         body {
-            width: 300px;
-            padding: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            width: 350px;
+            padding: 20px;
+            background-color: #F5F0E6; /* Sand background */
+            color: #182B49; /* UC San Diego Navy */
+            margin: 0;
+            height: 100vh;
         }
         #chatArea {
-            border: 1px solid #ccc;
+            background-color: #FFFFFF; /* White background */
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin: 10px 0;
-            padding: 5px;
-            height: 200px;
+            padding: 10px;
+            height: 300px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
         input, button {
-            margin: 5px 0;
+            outline: none;
+            border: 1px solid #00629B; /* UC San Diego Blue for borders */
+            border-radius: 20px;
+            padding: 8px 15px;
+            width: calc(100% - 32px);
+            box-sizing: border-box;
         }
+        input {
+            border: none;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #00629B; /* UC San Diego Blue for button */
+            color: #FFFFFF; /* White text for button */
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin: 5px 0 0 0;
+            width: auto;
+            padding: 8px 20px;
+        }
+        button:hover {
+            background-color: #004670; /* A darker blue on hover, derived from UC San Diego Navy */
+        }
+        .chat-message {
+            display: block;
+            padding: 8px 12px;
+            margin: 4px;
+            border-radius: 16px;
+            max-width: 70%;
+            word-wrap: break-word;      
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .outgoing {
+            background-color: #007aff; /* UC San Diego Blue */
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .incoming {
+            background-color: #d1d1d6; /* Light grey for incoming messages */
+            color: black;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+
+        .typing-bubble {
+            padding: 6px 10px; /* Adjust padding to match text bubbles */
+            margin: 4px auto; /* Center the typing bubble if necessary */
+            width: fit-content; /* Adjust width to fit content */
+            max-width: 70%; /* Ensure consistency with text message bubbles */
+            display: flex; /* Use flexbox for inner dot alignment */
+        }
+
+        .typing-dot {
+            height: 8px; /* Dot size, adjust as needed */
+            width: 8px; /* Dot size, adjust as needed */
+            margin: 0 2px; /* Spacing between dots */
+            background-color: #182B49; /* Dot color, adjust as needed */
+            border-radius: 50%; /* Circular dots */
+            animation: typingAnimation 1.4s infinite; /* Animation for moving dots */
+        }
+
+
+        .typing-dot:nth-child(1) {
+            left: 6px;
+            animation-delay: -0.32s;
+        }
+
+        .typing-dot:nth-child(2) {
+            left: 18px;
+            animation-delay: -0.16s;
+        }
+
+        .typing-dot:nth-child(3) {
+            left: 30px;
+        }
+
+        @keyframes typingAnimation {
+            0% { transform: translateY(0px); }
+            28% { transform: translateY(-6px); }
+            44% { transform: translateY(0px); }
+        }
+
     </style>
 </head>
 <body>
     <div>
+        <input type="text" id="urlInput" placeholder="Enter URL here...">
         <button id="fetchTranscript">Fetch Transcript</button>
     </div>
     <div id="chatArea">

@@ -1,26 +1,27 @@
 let currentContext = '';
 
 document.getElementById('fetchTranscript').addEventListener('click', function() {
+    const url = document.getElementById('urlInput').value;
     fetch('http://localhost:5000/fetch_transcript', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: searchForURL('https://cfvod.kaltura.com/api_v3/') }),
+        body: JSON.stringify({ url: url }),
     })
     .then(response => response.json())
     .then(data => {
         if(data.status === "success") {
             currentContext = data.transcript;
-            document.getElementById('chatArea').textContent = 'Transcript fetched successfully. You can now ask questions.';
+            addMessage('Transcript fetched successfully. You can now ask questions.', 'chatbot');
         } else {
             console.error('Error fetching transcript:', data.message);
-            document.getElementById('chatArea').textContent = 'Error fetching transcript. Please try another URL.';
+            addMessage('Error fetching transcript. Please try another URL.', 'chatbot');
         }
     })
     .catch((error) => {
         console.error('Error:', error);
-        document.getElementById('chatArea').textContent = 'Failed to fetch transcript. Check your server connection.';
+        addMessage('Failed to fetch transcript. Check your server connection.', 'chatbot');
     });
 });
 
@@ -30,6 +31,8 @@ document.getElementById('sendQuestion').addEventListener('click', function() {
         alert('Please fetch a transcript and enter a question before sending.');
         return;
     }
+    addMessage(question, 'user');
+    showTypingIndicator();
     fetch('http://localhost:5000/chat', {
         method: 'POST',
         headers: {
@@ -39,29 +42,50 @@ document.getElementById('sendQuestion').addEventListener('click', function() {
     })
     .then(response => response.json())
     .then(data => {
-        const chatArea = document.getElementById('chatArea');
-        chatArea.textContent += `\nYou: ${question}\nChatbot: ${data.response}`;
-        chatArea.scrollTop = chatArea.scrollHeight; // Scroll to the bottom
+        removeTypingIndicator();
+        addMessage(data.response, 'chatbot');
     })
     .catch((error) => {
         console.error('Error:', error);
+        removeTypingIndicator();
     });
 });
 
-function searchForURL(urlSubstring) {
-    // Get the HTML content of the webpage
-    const htmlContent = document.documentElement.outerHTML;
-
-    // Search for the URL containing the given substring
-    const urlRegex = new RegExp(`"${urlSubstring}[^"]*"`, 'g');
-    const match = htmlContent.match(urlRegex);
-
-    // If URL found
-    if (match) {
-        console.log(`URL containing "${urlSubstring}" found: ${match[0]}`);
-        return match[0];
+function addMessage(text, sender) {
+    const chatArea = document.getElementById('chatArea');
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = text;
+    messageDiv.classList.add('chat-message');
+    
+    if(sender === 'user') {
+        messageDiv.classList.add('outgoing');
     } else {
-        console.log(`URL containing "${urlSubstring}" not found in the HTML content.`);
-        return null;
+        messageDiv.classList.add('incoming');
+    }
+    
+    chatArea.appendChild(messageDiv);
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function showTypingIndicator() {
+    const chatArea = document.getElementById('chatArea');
+    const typingBubble = document.createElement('div');
+    typingBubble.classList.add('chat-message', 'incoming', 'typing-bubble');
+    typingBubble.id = 'typingIndicator';
+
+    for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('typing-dot');
+        typingBubble.appendChild(dot);
+    }
+
+    chatArea.appendChild(typingBubble);
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
     }
 }
