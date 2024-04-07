@@ -4,6 +4,13 @@
 
 Triton Tutor is an interactive personal AI tutor tailored to help UCSD students while rewatching lecture podcasts. Inspired by a blend of interactive learning platforms, AI personal assistants, and the concept of educational feedback loops, Triton Tutor aims to provide a personalized learning experience that keeps students engaged and in a constant state of learning.
 
+## Team Members
+
+Charan Battula
+Srideep Dornala
+Aatyanth Thimma Udayakumar
+Satvik Matta
+
 ### Inspiration
 
 Our journey began with a look at modern learning platforms that have made education more interactive and personalized than ever before. These platforms not only make learning more engaging but also provide immediate feedback, which is crucial for understanding and retaining information. Coupled with the capabilities of AI personal assistants that offer instant information and solutions, we envisioned a tool that could offer the best of both worlds.
