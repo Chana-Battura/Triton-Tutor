@@ -7,8 +7,11 @@ Triton Tutor is an interactive personal AI tutor tailored to help UCSD students 
 ## Team Members
 
 Charan Battula
+
 Srideep Dornala
+
 Aatyanth Thimma Udayakumar
+
 Satvik Matta
 
 ### Inspiration
