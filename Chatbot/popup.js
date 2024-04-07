@@ -1,8 +1,9 @@
 let currentContext = '';
 
 document.getElementById('fetchTranscript').addEventListener('click', function() {
-    const url = document.getElementById('urlInput').value;
-    fetch('http://localhost:5000/fetch_transcript', {
+    const url = searchForSrc();
+    console.log(url)
+    fetch('chanabattura.pythonanywhere.com/fetch_transcript', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -33,7 +34,7 @@ document.getElementById('sendQuestion').addEventListener('click', function() {
     }
     addMessage(question, 'user');
     showTypingIndicator();
-    fetch('http://localhost:5000/chat', {
+    fetch('chanabattura.pythonanywhere.com/chat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -87,5 +88,26 @@ function removeTypingIndicator() {
     const typingIndicator = document.getElementById('typingIndicator');
     if (typingIndicator) {
         typingIndicator.remove();
+    }
+}
+
+function searchForSrc() {
+    // Get all elements with src attribute
+    const elements = document.querySelectorAll('[src]');
+
+
+    // If elements found
+    if (elements.length > 0) {
+        for (let i = 0; i < elements.length; i++) {
+            const srcValue = elements[i].getAttribute('src');
+            const urlRegex = /https:\/\/cfvod\.kaltura\.com\/api_v3\/[^"]*/g; // Regex to match the URL
+            const match = srcValue.match(urlRegex);
+            if (match) {
+                console.log(match[0]);
+                return (match[0]); // Log the extracted URL
+            }
+        }
+    } else {
+        console.log(`No elements with src attribute found in the HTML content.`);
     }
 }
