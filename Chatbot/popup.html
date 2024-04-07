@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ChatBot Extension</title>
+    <title>Triton Tutor</title>
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -17,7 +17,7 @@
             background-color: #F5F0E6; /* Sand background */
             color: #182B49; /* UC San Diego Navy */
             margin: 0;
-            height: 100vh;
+            height: 93vh;
         }
         #chatArea {
             background-color: #FFFFFF; /* White background */
@@ -119,17 +119,53 @@
             44% { transform: translateY(0px); }
         }
 
+        .dark-mode {
+            background-color: #182B49; /* Dark background for body */
+            color: #ECF0F1; /* Light text color for body */
+        }
+
+        .dark-mode #chatArea {
+            background-color: #00629B; /* Darker background for chat area */
+        }
+
+        .dark-mode input, .dark-mode button {
+            border-color: #ECF0F1; /* Light border color */
+        }
+
+        .dark-mode button {
+            background-color: #16A085; /* Dark mode button background */
+            color: #ECF0F1; /* Dark mode button text color */
+        }
+
+        .dark-mode button:hover {
+            background-color: #1ABC9C; /* Dark mode button hover background */
+        }
+
+        .dark-mode .outgoing {
+            background-color: #D462AD; /* Dark mode outgoing message */
+        }
+
+        .dark-mode .incoming {
+            background-color: #F5F0E6; /* Dark mode incoming message */
+        }
+
+        .dark-mode .typing-dot {
+            background-color: #747678; /* Light color for typing dots in dark mode */
+        }
+
     </style>
 </head>
 <body>
+    <img id="bannerImage" src="light.png" alt="Banner" style="width: 100%; height: auto;">
     <div>
-        <input type="text" id="urlInput" placeholder="Enter URL here...">
         <button id="fetchTranscript">Fetch Transcript</button>
+        <button id="toggleDarkMode">Dark Mode</button>
+        <button id="helpButton">Help</button>
     </div>
     <div id="chatArea">
         <!-- Chat messages will be displayed here -->
     </div>
-    <input type="text" id="chatInput" placeholder="Ask a question...">
+    <input type="text" id="chatInput" placeholder="Ask a question..." style="width: 77%;">
     <button id="sendQuestion">Send</button>
 
     <script src="popup.js"></script>

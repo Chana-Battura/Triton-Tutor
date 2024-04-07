@@ -1,9 +1,15 @@
 {
     "manifest_version": 3,
-    "name": "ChatBot Extension",
+    "name": "Triton Tutor",
     "version": "1.0",
     "description": "Ask questions to a chatbot",
-    "permissions": ["activeTab"],
+    "permissions": ["activeTab", "tabs", "scripting"],
+    "content_scripts": [
+        {
+          "matches": ["<all_urls>"],
+          "js": ["contentScript.js"]
+        }
+      ],
     "action": {
       "default_popup": "popup.html",
       "default_icon": {

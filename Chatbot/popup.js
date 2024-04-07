@@ -1,40 +1,63 @@
 let currentContext = '';
 
 document.getElementById('fetchTranscript').addEventListener('click', function() {
-    const url = searchForSrc();
-    console.log(url)
-    fetch('chanabattura.pythonanywhere.com/fetch_transcript', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: url }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if(data.status === "success") {
-            currentContext = data.transcript;
-            addMessage('Transcript fetched successfully. You can now ask questions.', 'chatbot');
-        } else {
-            console.error('Error fetching transcript:', data.message);
-            addMessage('Error fetching transcript. Please try another URL.', 'chatbot');
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        addMessage('Failed to fetch transcript. Check your server connection.', 'chatbot');
+    // Send a message to the active tab's content script
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {action: "searchForSrc"}, function(response) {
+            if (chrome.runtime.lastError) {
+                // Handle error, such as no content script in the tab
+                console.error(chrome.runtime.lastError.message);
+                addMessage('Failed to communicate with the content script.', 'chatbot');
+                return;
+            }
+
+            const url = response.url; // The URL from the content script
+            console.log("Received URL: ", url);
+
+            if (!url) {
+                console.error('Error: No URL found or content script did not respond as expected.');
+                addMessage('Error fetching transcript. Please try another URL.', 'chatbot');
+                return;
+            }
+
+            // Use the URL for the fetch request
+            fetch('http://localhost:5000/fetch_transcript', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: url }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === "success") {
+                    // Assuming `currentContext` and `addMessage` are defined and work as intended
+                    currentContext = data.transcript;
+                    addMessage('Transcript fetched successfully. You can now ask questions.', 'chatbot');
+                } else {
+                    console.error('Error fetching transcript:', data.message);
+                    addMessage('Error fetching transcript. Please try another URL.', 'chatbot');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                addMessage('Failed to fetch transcript. Check your server connection.', 'chatbot');
+            });
+        });
     });
 });
 
 document.getElementById('sendQuestion').addEventListener('click', function() {
-    const question = document.getElementById('chatInput').value;
+    const questionInput = document.getElementById('chatInput');
+    const question = questionInput.value;
     if (!currentContext || question.trim() === '') {
         alert('Please fetch a transcript and enter a question before sending.');
         return;
     }
     addMessage(question, 'user');
+    questionInput.value = '';
     showTypingIndicator();
-    fetch('chanabattura.pythonanywhere.com/chat', {
+    fetch('http://localhost:5000/chat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -50,6 +73,22 @@ document.getElementById('sendQuestion').addEventListener('click', function() {
         console.error('Error:', error);
         removeTypingIndicator();
     });
+});
+
+
+document.getElementById('toggleDarkMode').addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+    const bannerImage = document.getElementById('bannerImage');
+    if (document.body.classList.contains('dark-mode')) {
+        bannerImage.src = 'dark.png'; // Use the path to your dark mode image
+    } else {
+        bannerImage.src = 'light.png'; // Use the path to your light mode image
+    }
+});
+
+
+document.getElementById('helpButton').addEventListener('click', function() {
+    alert('Type your question in the box and press Send to ask about the podcast transcript.');
 });
 
 function addMessage(text, sender) {
@@ -91,23 +130,5 @@ function removeTypingIndicator() {
     }
 }
 
-function searchForSrc() {
-    // Get all elements with src attribute
-    const elements = document.querySelectorAll('[src]');
 
 
-    // If elements found
-    if (elements.length > 0) {
-        for (let i = 0; i < elements.length; i++) {
-            const srcValue = elements[i].getAttribute('src');
-            const urlRegex = /https:\/\/cfvod\.kaltura\.com\/api_v3\/[^"]*/g; // Regex to match the URL
-            const match = srcValue.match(urlRegex);
-            if (match) {
-                console.log(match[0]);
-                return (match[0]); // Log the extracted URL
-            }
-        }
-    } else {
-        console.log(`No elements with src attribute found in the HTML content.`);
-    }
-}
