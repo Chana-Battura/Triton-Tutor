@@ -1,13 +1,12 @@
 let currentContext = '';
 
 document.getElementById('fetchTranscript').addEventListener('click', function() {
-    const url = document.getElementById('urlInput').value;
     fetch('http://localhost:5000/fetch_transcript', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: url }),
+        body: JSON.stringify({ url: searchForURL('https://cfvod.kaltura.com/api_v3/') }),
     })
     .then(response => response.json())
     .then(data => {
@@ -48,3 +47,21 @@ document.getElementById('sendQuestion').addEventListener('click', function() {
         console.error('Error:', error);
     });
 });
+
+function searchForURL(urlSubstring) {
+    // Get the HTML content of the webpage
+    const htmlContent = document.documentElement.outerHTML;
+
+    // Search for the URL containing the given substring
+    const urlRegex = new RegExp(`"${urlSubstring}[^"]*"`, 'g');
+    const match = htmlContent.match(urlRegex);
+
+    // If URL found
+    if (match) {
+        console.log(`URL containing "${urlSubstring}" found: ${match[0]}`);
+        return match[0];
+    } else {
+        console.log(`URL containing "${urlSubstring}" not found in the HTML content.`);
+        return null;
+    }
+}
